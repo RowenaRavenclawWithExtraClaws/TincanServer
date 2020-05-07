@@ -1,0 +1,141 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource mysql {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model cans {
+  avatar                             String?
+  id                                 Int             @default(autoincrement()) @unique
+  name                               String
+  phone                              String          @unique
+  concerts_cansToconcerts_adminID    concerts[]      @relation("cansToconcerts_adminID")
+  concerts_cansToconcerts_creatorID  concerts[]      @relation("cansToconcerts_creatorID")
+  parties                            parties[]
+  playbook_cansToplaybook_endCanID   playbook[]      @relation("cansToplaybook_endCanID")
+  playbook_cansToplaybook_startCanID playbook[]      @relation("cansToplaybook_startCanID")
+  tracks                             tracks[]
+  concertHasCans                     concertHasCans? @relation("concertHasCansTocans")
+  partyHasAdmins                     partyHasAdmins? @relation("partyHasAdminsTocans")
+  partyHasCans                       partyHasCans?   @relation("partyHasCansTocans")
+
+  @@id([id, phone])
+}
+
+model concerts {
+  adminID                       Int
+  avatar                        String?
+  creatorID                     Int
+  dateCreated                   DateTime
+  id                            Int              @default(autoincrement()) @id
+  name                          String
+  cans_cansToconcerts_adminID   cans             @relation("cansToconcerts_adminID", fields: [adminID], references: [id])
+  cans_cansToconcerts_creatorID cans             @relation("cansToconcerts_creatorID", fields: [creatorID], references: [id])
+  concertHasCans                concertHasCans?
+  playsToAudiance               playsToAudiance? @relation("playsToAudianceToconcerts")
+
+  @@index([adminID], name: "linkConcertAdmin_idx")
+  @@index([creatorID], name: "linkConcertCreator_idx")
+}
+
+model parties {
+  avatar            String?
+  creatorID         Int
+  dateCreated       DateTime
+  id                Int                @default(autoincrement()) @id
+  name              String
+  cans              cans               @relation(fields: [creatorID], references: [id])
+  partyHasAdmins    partyHasAdmins?    @relation("partyHasAdminsToparties")
+  partyHasCans      partyHasCans?      @relation("partyHasCansToparties")
+  playsToAttendance playsToAttendance? @relation("playsToAttendanceToparties")
+
+  @@index([creatorID], name: "linkPartyCreator_idx")
+}
+
+model playbook {
+  endCanID                       Int
+  id                             Int         @default(autoincrement()) @id
+  startCanID                     Int
+  cans_cansToplaybook_endCanID   cans        @relation("cansToplaybook_endCanID", fields: [endCanID], references: [id])
+  cans_cansToplaybook_startCanID cans        @relation("cansToplaybook_startCanID", fields: [startCanID], references: [id])
+  playsToCan                     playsToCan? @relation("playsToCanToplaybook")
+
+  @@index([startCanID], name: "linkOneSide_idx")
+  @@index([endCanID], name: "linkOtherSide_idx")
+}
+
+model tracks {
+  id                Int                @default(autoincrement()) @id
+  name              String
+  streamedDate      DateTime
+  streamerID        Int
+  cans              cans               @relation(fields: [streamerID], references: [id])
+  playsToAttendance playsToAttendance?
+  playsToAudiance   playsToAudiance?
+  playsToCan        playsToCan?
+
+  @@index([streamerID], name: "linkTrackStreamer_idx")
+}
+
+model concertHasCans {
+  canID     Int      @unique
+  concertID Int      @unique
+  cans      cans     @relation("concertHasCansTocans", fields: [canID], references: [id])
+  concerts  concerts @relation(fields: [concertID], references: [id])
+
+  @@index([concertID], name: "index1")
+  @@map("_concertHasCans")
+}
+
+model partyHasAdmins {
+  adminID Int     @unique
+  partyID Int     @unique
+  cans    cans    @relation("partyHasAdminsTocans", fields: [adminID], references: [id])
+  parties parties @relation("partyHasAdminsToparties", fields: [partyID], references: [id])
+
+  @@index([partyID], name: "index2")
+  @@map("_partyHasAdmins")
+}
+
+model partyHasCans {
+  canID   Int     @unique
+  partyID Int     @unique
+  cans    cans    @relation("partyHasCansTocans", fields: [canID], references: [id])
+  parties parties @relation("partyHasCansToparties", fields: [partyID], references: [id])
+
+  @@index([partyID], name: "index3")
+  @@map("_partyHasCans")
+}
+
+model playsToAttendance {
+  partyID Int     @unique
+  trackID Int     @unique
+  parties parties @relation("playsToAttendanceToparties", fields: [partyID], references: [id])
+  tracks  tracks  @relation(fields: [trackID], references: [id])
+
+  @@index([trackID], name: "index4")
+  @@map("_playsToAttendance")
+}
+
+model playsToAudiance {
+  concertID Int      @unique
+  trackID   Int      @unique
+  concerts  concerts @relation("playsToAudianceToconcerts", fields: [concertID], references: [id])
+  tracks    tracks   @relation(fields: [trackID], references: [id])
+
+  @@index([trackID], name: "index5")
+  @@map("_playsToAudiance")
+}
+
+model playsToCan {
+  playbookID Int      @unique
+  trackID    Int      @unique
+  playbook   playbook @relation("playsToCanToplaybook", fields: [playbookID], references: [id])
+  tracks     tracks   @relation(fields: [trackID], references: [id])
+
+  @@index([trackID], name: "index6")
+  @@map("_playsToCan")
+}
