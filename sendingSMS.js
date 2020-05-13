@@ -1,8 +1,8 @@
 'use strict'
 
-const accountSid = 'AC921c876b91b72e98f227a03299dfccb0'; // those are given
-const authToken = 'fc5582d3c9e6d34bd337724f6a230bc0';    // by twilio.
-const client = require('twilio')(accountSid, authToken);
+const fs = require('fs');
+const credintials = JSON.parse(fs.readFileSync('config.json', 'utf8'));
+const client = require('twilio')(credintials.accountSid, credintials.authToken);
 
 let generateCode = () => {
     let code = '';
@@ -20,7 +20,7 @@ exports.sendMessege = async (phoneNumber) => {
 
     await client.messages.create({
         body: code,
-        from: '+12563877866',
+        from: credintials.smsSender,
         to: phoneNumber
     })
 
