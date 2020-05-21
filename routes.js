@@ -7,9 +7,9 @@ const database = require('./database')
 const fs = require('fs');
 const app = express();
 
-app.use(bodyParser.text({ limit: '50mb' }));
-app.use(bodyParser.json({ limit: '50mb' }));
-app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
+app.use(bodyParser.text({ limit: '10mb' }));
+app.use(bodyParser.json({ limit: '10mb' }));
+app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }));
 
 let code = '';
 
