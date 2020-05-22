@@ -1,9 +1,11 @@
 'use strict'
 
 const mongoose = require('mongoose');
+mongoose.connect('mongodb://localhost:27017/tincan', { useNewUrlParser: true });
+
 const Schema = mongoose.Schema;
 
-const user = new Schema({
+const userSchema = new Schema({
     phone: String,
     name: String,
     avatar: String,
@@ -58,3 +60,8 @@ const user = new Schema({
         }
     ]
 });
+
+// retieve a model from the user schema
+let user = mongoose.model('user', userSchema);
+
+exports.user = user;
