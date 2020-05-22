@@ -3,7 +3,7 @@
 const sender = require('./sendingSMS');
 const express = require('express');
 const bodyParser = require('body-parser');
-const database = require('./database')
+const database = require('./sqlDatabase')
 const fs = require('fs');
 const app = express();
 
@@ -87,5 +87,5 @@ exports.appFetchCans = app.post('/fetchCans', async (req, res) => {
 // request body consists of array of phone numbers in json format
 // with the first element being the user's phone number
 exports.appFetchPlaybooks = app.post('/fetchPlaybooks', async (req, res) => {
-    
+
 });
