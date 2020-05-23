@@ -1,8 +1,13 @@
 'use strict'
 
-const router = require('./sqlRoutes');
+const router = require('./nosqlRoutes');
 
-router.appGetCode.listen(8000);
-router.appAddCan.listen(8001);
-router.appFindCan.listen(8002);
-router.appFetchCans.listen(8003);
+try {
+    //router.getCode.listen(8000);
+    router.addUser.listen(8006);
+    router.findUserByID.listen(8005);
+    router.findUserByPhone.listen(8004);
+}
+catch (e) {
+    console.log(e);
+}

@@ -6,13 +6,13 @@ mongoose.connect('mongodb://localhost:27017/tincan', { useNewUrlParser: true });
 const Schema = mongoose.Schema;
 
 const userSchema = new Schema({
-    phone: String,
+    phone: { type: String, unique: true },
     name: String,
     avatar: String,
     logged: Boolean,
     friends: [
         {
-            phone: String,
+            phone: { type: String, unique: true },
             name: String,
             avatar: String,
             playbook: [
@@ -62,6 +62,6 @@ const userSchema = new Schema({
 });
 
 // retieve a model from the user schema
-let user = mongoose.model('user', userSchema);
+const userModel = mongoose.model('user', userSchema);
 
-exports.user = user;
+exports.userModel = userModel;
