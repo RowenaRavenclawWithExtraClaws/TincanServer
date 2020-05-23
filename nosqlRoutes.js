@@ -50,7 +50,7 @@ exports.fetchUsers = app.post('/fetchUsers', async (req, res) => {
     for (let i = 0; i < req.body.length; i++) {
         user = await database.findUserByPhone(req.body[i].phone)
 
-        if (user != null) results.push(user);
+        if (user.length > 0) results.push(user);
     }
 
     res.status(200).send(results);
