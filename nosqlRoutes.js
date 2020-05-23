@@ -30,21 +30,17 @@ exports.addUser = app.post('/addUser', async (req, res) => {
 })
 
 exports.findUserByID = app.get('/findUserByID/:id', async (req, res) => {
-    const user = await database.findUserByID(req.params.id).catch(e => {
-        console.log(e);
-        res.sendStatus(404);
-    })
+    const user = await database.findUserByID(req.params.id);
 
-    res.status(200).send(user);
+    if (user == null) res.sendStatus(404);
+    else res.status(200).send(user);
 })
 
 exports.findUserByPhone = app.get('/findUserByPhone/:phone', async (req, res) => {
-    const user = await database.findUserByPhone(req.params.phone).catch(e => {
-        console.log(e);
-        res.sendStatus(404);
-    })
+    const user = await database.findUserByPhone(req.params.phone)
 
-    res.status(200).send(user);
+    if (user == null) res.sendStatus(404);
+    else res.status(200).send(user);
 })
 
 exports.fetchUsers = app.post('/fetchUsers', async (req, res) => {
@@ -52,10 +48,9 @@ exports.fetchUsers = app.post('/fetchUsers', async (req, res) => {
     let results = [];
 
     for (let i = 0; i < req.body.length; i++) {
-        user = await database.findUserByPhone(req.body[i].phone).catch(e => {
-            res.sendStatus(404);
-        })
-        results.push(user);
+        user = await database.findUserByPhone(req.body[i].phone)
+
+        if (user != null) results.push(user);
     }
 
     res.status(200).send(results);
