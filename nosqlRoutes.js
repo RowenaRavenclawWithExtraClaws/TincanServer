@@ -24,25 +24,25 @@ exports.addUser = app.post('/addUser', async (req, res) => {
     await database.addUser(req.body).catch(e => {
         console.log(e);
         res.sendStatus(404);
-    })
+    });
 
     res.sendStatus(200);
-})
+});
 
 exports.findUserByID = app.get('/findUserByID/:id', async (req, res) => {
     const user = await database.findUserByID(req.params.id);
 
     res.status(200).send(user); // user can be empty array
-})
+});
 
 exports.findUserByPhone = app.get('/findUserByPhone/:phone', async (req, res) => {
     const user = await database.findUserByPhone(req.params.phone)
 
     res.status(200).send(user);
-})
+});
 
 exports.fetchUsers = app.post('/fetchUsers', async (req, res) => {
     results = database.findUsers(req.body);
 
     res.status(200).send(results);
-})
+});
