@@ -32,26 +32,17 @@ exports.addUser = app.post('/addUser', async (req, res) => {
 exports.findUserByID = app.get('/findUserByID/:id', async (req, res) => {
     const user = await database.findUserByID(req.params.id);
 
-    if (user == null) res.sendStatus(404);
-    else res.status(200).send(user);
+    res.status(200).send(user); // user can be empty array
 })
 
 exports.findUserByPhone = app.get('/findUserByPhone/:phone', async (req, res) => {
     const user = await database.findUserByPhone(req.params.phone)
 
-    if (user == null) res.sendStatus(404);
-    else res.status(200).send(user);
+    res.status(200).send(user);
 })
 
 exports.fetchUsers = app.post('/fetchUsers', async (req, res) => {
-    let user = null;
-    let results = [];
-
-    for (let i = 0; i < req.body.length; i++) {
-        user = await database.findUserByPhone(req.body[i].phone)
-
-        if (user.length > 0) results.push(user);
-    }
+    results = database.findUsers(req.body);
 
     res.status(200).send(results);
 })

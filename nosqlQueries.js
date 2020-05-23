@@ -19,3 +19,16 @@ exports.findUserByPhone = async (phoneNum) => {
     });
     return user;
 }
+
+exports.findUsers = async (phones) => {
+    let user = null;
+    let results = [];
+
+    for (let i = 0; i < req.body.length; i++) {
+        user = await database.findUserByPhone(req.body[i].phone)
+
+        if (user.length > 0) results.push(user);
+    }
+
+    return results;
+}
