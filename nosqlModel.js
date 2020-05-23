@@ -6,13 +6,13 @@ mongoose.connect('mongodb://localhost:27017/tincan', { useNewUrlParser: true });
 const Schema = mongoose.Schema;
 
 const userSchema = new Schema({
-    phone: { type: String, unique: true },
+    phone: String,
     name: String,
     avatar: String,
     logged: Boolean,
     friends: [
         {
-            phone: { type: String, unique: true },
+            phone: String,
             name: String,
             avatar: String,
             playbook: [

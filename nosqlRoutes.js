@@ -25,6 +25,7 @@ exports.addUser = app.post('/addUser', async (req, res) => {
         console.log(e);
         res.sendStatus(404);
     })
+
     res.sendStatus(200);
 })
 
@@ -33,6 +34,7 @@ exports.findUserByID = app.get('/findUserByID/:id', async (req, res) => {
         console.log(e);
         res.sendStatus(404);
     })
+
     res.status(200).send(user);
 })
 
@@ -41,5 +43,20 @@ exports.findUserByPhone = app.get('/findUserByPhone/:phone', async (req, res) =>
         console.log(e);
         res.sendStatus(404);
     })
+
     res.status(200).send(user);
+})
+
+exports.fetchUsers = app.post('/fetchUsers', async (req, res) => {
+    let user = null;
+    let results = [];
+
+    for (let i = 0; i < req.body.length; i++) {
+        user = await database.findUserByPhone(req.body[i].phone).catch(e => {
+            res.sendStatus(404);
+        })
+        results.push(user);
+    }
+
+    res.status(200).send(results);
 })
