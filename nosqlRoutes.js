@@ -46,3 +46,12 @@ exports.fetchUsers = app.post('/fetchUsers', async (req, res) => {
 
     res.status(200).send(results);
 });
+
+exports.addFriend = app.post('/addFriend', async (req, res) => {
+    await database.addFriend(req.body.userPhone, req.body.friendPhone).catch(e => {
+        console.log(e);
+        res.sendStatus(404);
+    });
+
+    res.sendStatus(200);
+});
