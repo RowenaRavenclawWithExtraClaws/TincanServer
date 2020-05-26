@@ -3,7 +3,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const sender = require('./sendingSMS');
-const database = require('./nosqlQueries')
+const database = require('./queries')
 const fs = require('fs');
 const app = express();
 

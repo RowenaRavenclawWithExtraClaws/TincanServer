@@ -1,6 +1,6 @@
 'use strict'
 
-const router = require('./nosqlRoutes');
+const router = require('./routes');
 
 try {
     router.getCode.listen(8000);

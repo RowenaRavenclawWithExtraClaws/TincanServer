@@ -1,6 +1,6 @@
 'use strict'
 
-const { userModel } = require('./nosqlModel');
+const { userModel } = require('./model');
 
 exports.addUser = async (user) => {
     await userModel.create(user);
