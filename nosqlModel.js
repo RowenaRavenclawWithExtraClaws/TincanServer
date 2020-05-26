@@ -9,7 +9,6 @@ const userSchema = new Schema({
     phone: String,
     name: String,
     avatar: String,
-    logged: Boolean,
     friends: [
         {
             phone: String,

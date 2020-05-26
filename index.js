@@ -3,7 +3,7 @@
 const router = require('./nosqlRoutes');
 
 try {
-    //router.getCode.listen(8000);
+    router.getCode.listen(8000);
     router.addUser.listen(8001);
     router.findUserByID.listen(8002);
     router.findUserByPhone.listen(8003);
