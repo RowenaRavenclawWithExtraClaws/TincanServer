@@ -21,47 +21,60 @@ exports.getCode = app.get('/getCode/:phone', async (req, res) => {
 });
 
 exports.addUser = app.post('/addUser', async (req, res) => {
-    var realFile = Buffer.from(req.body.avatar, 'base64');
-    var name = req.body.phone + '.' + req.body.extention;
-    var avatarPath = 'avatars/' + name;
+    let realFile = Buffer.from(req.body.avatar, 'base64');
+    let name = req.body.phone + '.' + req.body.extention;
+    let avatarPath = 'avatars/' + name;
+    let saved = true;
 
     fs.writeFile(avatarPath, realFile, function (err) {
-        if (err) console.log(err);
+        if (err) {
+            res.sendStatus(404);
+            console.log(err);
+            saved = false;
+        }
     });
 
     req.body.avatar = avatarPath;
 
-    await database.addUser(req.body).catch(e => {
-        console.log(e);
-        res.sendStatus(404);
-    });
+    if (saved) {
+        await database.addUser(req.body).catch(e => {
+            res.sendStatus(404);
+            console.log(e);
+        });
+    }
 
-    res.sendStatus(200);
+    res.sendStatus(201);
 });
 
 exports.findUserByID = app.get('/findUserByID/:id', async (req, res) => {
-    const user = await database.findUserByID(req.params.id);
+    const user = await database.findUserByID(req.params.id).catch(err => {
+        res.sendStatus(404);
+    });
 
     res.status(200).send(user); // user can be empty array
 });
 
 exports.findUserByPhone = app.get('/findUserByPhone/:phone', async (req, res) => {
-    const user = await database.findUserByPhone(req.params.phone)
+    const user = await database.findUserByPhone(req.params.phone).catch(err => {
+        res.sendStatus(404);
+    });
 
     res.status(200).send(user);
 });
 
 exports.fetchUsers = app.post('/fetchUsers', async (req, res) => {
-    results = database.findUsers(req.body);
+    results = database.findUsers(req.body).catch(err => {
+        res.sendStatus(404);
+    });
 
     res.status(200).send(results);
 });
 
 exports.addFriend = app.post('/addFriend', async (req, res) => {
     await database.addFriend(req.body.userPhone, req.body.friendPhone).catch(e => {
-        console.log(e);
         res.sendStatus(404);
+        console.log(e);
     });
 
-    res.sendStatus(200);
+    res.sendStatus(201);
 });

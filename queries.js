@@ -7,16 +7,12 @@ exports.addUser = async (user) => {
 }
 
 exports.findUserByID = async (id) => {
-    const user = await userModel.findById(id, (err) => {
-        if (err) console.log(err);
-    });
+    const user = await userModel.findById(id);
     return user;
 }
 
 exports.findUserByPhone = async (phoneNum) => {
-    const user = await userModel.find({ phone: phoneNum }, (err) => {
-        if (err) console.log(err);
-    });
+    const user = await userModel.find({ phone: phoneNum });
     return user;
 }
 
@@ -41,8 +37,7 @@ exports.addFriend = async (userPhone, friendPhone) => {
         friend = {
             phone: friend[0].phone,
             name: friend[0].name,
-            avatar: friend[0].avatar,
-            playbook: []
+            avatar: friend[0].avatar
         };
 
         user[0].friends.push(friend);
