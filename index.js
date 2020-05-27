@@ -7,8 +7,8 @@ try {
     router.addUser.listen(8001);
     router.findUserByID.listen(8002);
     router.findUserByPhone.listen(8003);
-    router.fetchUsers.listen(8004);
-    router.addFriend.listen(8005);
+    router.addFriend.listen(8004);
+    router.addFriends.listen(8005);
 }
 catch (e) {
     console.log(e);

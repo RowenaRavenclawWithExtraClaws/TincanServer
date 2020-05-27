@@ -16,21 +16,7 @@ exports.findUserByPhone = async (phoneNum) => {
     return user;
 }
 
-exports.findUsers = async (phones) => {
-    let user = null;
-    let results = [];
-
-    for (let i = 0; i < phones.length; i++) {
-        user = await this.findUserByPhone(phones[i].phone)
-
-        if (user.length > 0) results.push(user);
-    }
-
-    return results;
-}
-
-exports.addFriend = async (userPhone, friendPhone) => {
-    let user = await this.findUserByPhone(userPhone);
+exports.addFriend = async (user, friendPhone) => {
     let friend = await this.findUserByPhone(friendPhone);
 
     if (friend.length > 0) {

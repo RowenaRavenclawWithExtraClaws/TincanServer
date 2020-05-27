@@ -62,19 +62,24 @@ exports.findUserByPhone = app.get('/findUserByPhone/:phone', async (req, res) =>
     res.status(200).send(user);
 });
 
-exports.fetchUsers = app.post('/fetchUsers', async (req, res) => {
-    results = database.findUsers(req.body).catch(err => {
-        res.sendStatus(404);
-    });
-
-    res.status(200).send(results);
-});
-
 exports.addFriend = app.post('/addFriend', async (req, res) => {
     await database.addFriend(req.body.userPhone, req.body.friendPhone).catch(e => {
         res.sendStatus(404);
         console.log(e);
     });
+
+    res.sendStatus(201);
+});
+
+exports.addFriends = app.post('/addFriends', async (req, res) => {
+    let user = await database.findUserByPhone(req.body.phone);
+
+    for (let i = 0; i < req.body.phones.length; i++) {
+        await database.addFriend(user, req.body.phones[i]).catch(e => {
+            res.sendStatus(404);
+            console.log(e);
+        });
+    }
 
     res.sendStatus(201);
 });
