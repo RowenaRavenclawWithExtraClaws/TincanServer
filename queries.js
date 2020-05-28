@@ -26,7 +26,7 @@ exports.addFriend = async (user, friendPhone) => {
             avatar: friend[0].avatar
         };
 
-        user[0].friends.push(friend);
-        await userModel.updateOne({ phone: userPhone }, { friends: user[0].friends });
+        user.friends.push(friend);
+        await userModel.updateOne({ phone: user.phone }, { friends: user.friends });
     }
 }

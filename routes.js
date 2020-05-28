@@ -72,10 +72,11 @@ exports.addFriend = app.post('/addFriend', async (req, res) => {
 });
 
 exports.addFriends = app.post('/addFriends', async (req, res) => {
+    let phoneList = await JSON.parse(req.body.phones);
     let user = await database.findUserByPhone(req.body.phone);
 
-    for (let i = 0; i < req.body.phones.length; i++) {
-        await database.addFriend(user, req.body.phones[i]).catch(e => {
+    for (let i = 0; i < phoneList.length; i++) {
+        await database.addFriend(user[0], phoneList[i]).catch(e => {
             res.sendStatus(404);
             console.log(e);
         });
