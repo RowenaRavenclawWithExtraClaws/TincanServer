@@ -29,7 +29,7 @@ exports.getCode = app.get('/getCode/:phone', async (req, res) => {
 exports.addUser = app.post('/addUser', async (req, res) => {
     let realFile = Buffer.from(req.body.avatar, 'base64');
     let name = req.body.phone + '.' + req.body.extention;
-    let avatarPath = 'avatars/' + name;
+    let avatarPath = 'avatars/users/' + name;
     let saved = true;
 
     console.log('Saving user avatar...');
