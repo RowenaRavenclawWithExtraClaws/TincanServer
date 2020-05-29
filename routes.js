@@ -104,12 +104,12 @@ exports.addFriends = app.post('/addFriends', async (req, res) => {
     let phoneList = await JSON.parse(req.body.phones);
     let user = await database.findUserByPhone(req.body.phone);
 
-    for (let i = 0; i < phoneList.length; i++) {
-        await database.addFriend(user[0], phoneList[i]).catch(e => {
+    phoneList.map((phoneNumber) => {
+        database.addFriend(user[0], phoneNumber).catch(e => {
             res.sendStatus(404);
             console.log(e);
         });
-    }
+    });
 
     res.sendStatus(201);
 
