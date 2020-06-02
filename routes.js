@@ -80,7 +80,7 @@ exports.findUserByPhone = app.get('/findUserByPhone/:phone', async (req, res) =>
         res.sendStatus(404);
     });
 
-    res.status(200).send(user);
+    res.status(200).send(user[0]); // get the first (and only) element from the user array
 
     console.log('Done');
 });
@@ -114,4 +114,20 @@ exports.addFriends = app.post('/addFriends', async (req, res) => {
     res.sendStatus(201);
 
     console.log('Done');
+});
+
+exports.fetchAvatars = app.post('/fetchAvatars', async (req, res) => {
+    console.log('fetching avatars...');
+
+    let userAvatarDir = fs.readdirSync('avatars/users');
+    let img = '';
+    let avatarImgs = [];
+
+    userAvatarDir.map((file) => {
+        img = fs.readFileSync('avatars/users/' + file, { encoding: 'base64' });
+
+        avatarImgs.push(img);
+    });
+
+    res.send(avatarImgs);
 });

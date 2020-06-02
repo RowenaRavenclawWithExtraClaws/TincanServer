@@ -1,7 +1,7 @@
 'use strict'
 
 const fs = require('fs');
-const credintials = JSON.parse(fs.readFileSync('/home/abdelrahman/Documents/Projects/Tincan/tincanServer/config.json', 'utf8'));
+const credintials = JSON.parse(fs.readFileSync('config.json', 'utf8'));
 const client = require('twilio')(credintials.accountSid, credintials.authToken);
 
 let generateCode = () => {
