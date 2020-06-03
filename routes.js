@@ -119,12 +119,11 @@ exports.addFriends = app.post('/addFriends', async (req, res) => {
 exports.fetchAvatars = app.post('/fetchAvatars', async (req, res) => {
     console.log('fetching avatars...');
 
-    let userAvatarDir = fs.readdirSync('avatars/users');
     let img = '';
     let avatarImgs = [];
 
-    userAvatarDir.map((file) => {
-        img = fs.readFileSync('avatars/users/' + file, { encoding: 'base64' });
+    req.body.map((imgName) => {
+        img = fs.readFileSync('avatars/users/' + imgName, { encoding: 'base64' });
 
         avatarImgs.push(img);
     });
