@@ -79,8 +79,9 @@ exports.findUserByPhone = app.get('/findUserByPhone/:phone', async (req, res) =>
     const user = await database.findUserByPhone(req.params.phone).catch(err => {
         res.sendStatus(404);
     });
+    if (user.length > 0) res.status(200).send(user[0]); // get the first (and only) element from the user array
 
-    res.status(200).send(user[0]); // get the first (and only) element from the user array
+    res.sendStatus(404);
 
     console.log('Done');
 });
@@ -120,13 +121,15 @@ exports.fetchAvatars = app.post('/fetchAvatars', async (req, res) => {
     console.log('fetching avatars...');
 
     let img = '';
-    let avatarImgs = [];
+    let imgPaths = await JSON.parse(req.body);
+    let phoneToImg = {};
 
-    req.body.map((imgName) => {
-        img = fs.readFileSync('avatars/users/' + imgName, { encoding: 'base64' });
+    imgPaths.map((imgPath) => {
+        img = fs.readFileSync(imgPath, { encoding: 'base64' });
+        let key = imgPath.substr(14, 17);
 
-        avatarImgs.push(img);
+        phoneToImg[key] = img;
     });
 
-    res.send(avatarImgs);
+    res.send(phoneToImg);
 });
