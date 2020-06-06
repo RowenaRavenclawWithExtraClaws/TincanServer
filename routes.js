@@ -1,10 +1,8 @@
 'use strict'
 
-const fs = require('fs');
 const express = require('express');
 const bodyParser = require('body-parser');
-const sender = require('./sendingSMS');
-const database = require('./queries')
+const logic = require('./routeLogic');
 
 const app = express();
 
@@ -12,124 +10,16 @@ app.use(bodyParser.text({ limit: '10mb' }));
 app.use(bodyParser.json({ limit: '10mb' }));
 app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }));
 
-exports.getCode = app.get('/getCode/:phone', async (req, res) => {
-    console.log('Getting verification code...');
+exports.getCode = app.get('/getCode/:phone', logic.getCode);
 
-    let code = await sender.sendMessege(req.params.phone)
-        .catch(e => {
-            res.sendStatus(404); // indicating there is no code retirved
-            console.log(e);
-        });
+exports.addUser = app.post('/addUser', logic.addUser);
 
-    res.status(200).send(code);
+exports.findUserByID = app.post('/addUser', logic.findUserByID);
 
-    console.log('Done');
-});
+exports.findUserByPhone = app.post('/addUser', logic.findUserByPhone);
 
-exports.addUser = app.post('/addUser', async (req, res) => {
-    let realFile = Buffer.from(req.body.avatar, 'base64');
-    let name = req.body.phone + '.' + req.body.extention;
-    let avatarPath = 'avatars/users/' + name;
-    let saved = true;
+exports.addFriend = app.post('/addUser', logic.addFriend);
 
-    console.log('Saving user avatar...');
+exports.addFriends = app.post('/addUser', logic.addFriends);
 
-    fs.writeFile(avatarPath, realFile, function (err) {
-        if (err) {
-            res.sendStatus(404);
-            console.log(err);
-            saved = false;
-        }
-    });
-
-    console.log('Done');
-
-    req.body.avatar = avatarPath;
-
-    if (saved) {
-        console.log('Adding new user...');
-
-        await database.addUser(req.body).catch(e => {
-            res.sendStatus(404);
-            console.log(e);
-        });
-    }
-
-    res.sendStatus(201);
-
-    console.log('Done');
-});
-
-exports.findUserByID = app.get('/findUserByID/:id', async (req, res) => {
-    console.log('Searching for user by a certain ID...');
-
-    const user = await database.findUserByID(req.params.id).catch(err => {
-        res.sendStatus(404);
-        console.log(err);
-    });
-
-    res.status(200).send(user); // user can be an empty array
-
-    console.log('Done');
-});
-
-exports.findUserByPhone = app.get('/findUserByPhone/:phone', async (req, res) => {
-    console.log('Searching for user by a certain phone number...');
-
-    const user = await database.findUserByPhone(req.params.phone).catch(err => {
-        res.sendStatus(404);
-    });
-    if (user.length > 0) res.status(200).send(user[0]); // get the first (and only) element from the user array
-
-    res.sendStatus(404);
-
-    console.log('Done');
-});
-
-exports.addFriend = app.post('/addFriend', async (req, res) => {
-    console.log('Add a friend to the current user friend list...');
-
-    await database.addFriend(req.body.userPhone, req.body.friendPhone).catch(e => {
-        res.sendStatus(404);
-        console.log(e);
-    });
-
-    res.sendStatus(201);
-
-    console.log('Done');
-});
-
-exports.addFriends = app.post('/addFriends', async (req, res) => {
-    console.log('Add multiple friends to the current user friend list...');
-
-    let phoneList = await JSON.parse(req.body.phones);
-    let user = await database.findUserByPhone(req.body.phone);
-
-    phoneList.map((phoneNumber) => {
-        database.addFriend(user[0], phoneNumber).catch(e => {
-            res.sendStatus(404);
-            console.log(e);
-        });
-    });
-
-    res.sendStatus(201);
-
-    console.log('Done');
-});
-
-exports.fetchAvatars = app.post('/fetchAvatars', async (req, res) => {
-    console.log('fetching avatars...');
-
-    let img = '';
-    let imgPaths = await JSON.parse(req.body);
-    let phoneToImg = {};
-
-    imgPaths.map((imgPath) => {
-        img = fs.readFileSync(imgPath, { encoding: 'base64' });
-        let key = imgPath.substr(14, 17);
-
-        phoneToImg[key] = img;
-    });
-
-    res.send(phoneToImg);
-});
+exports.fetchAvatars = app.post('/addUser', logic.fetchAvatars);
