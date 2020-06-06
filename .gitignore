@@ -2,3 +2,5 @@ node_modules
 prisma
 avatars
 package.json
+test.js
+test2.js
